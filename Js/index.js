@@ -126,45 +126,10 @@ var start = function(){
         }
         run(this.actions);
     }
-
-    function choose_pivot(aa, pivot_type, left, right) {
-        if(typeof(left) === 'undefined') left = 0;
-        if(typeof(right) === 'undefined') right = aa.length() - 1;
-        var pivot = null;
-        if(pivot_type === 'random') {
-            pivot = randint(left, right);
-        }else if(pivot_type === 'first') {
-            pivot = left;
-        }else if(pivot_type === 'last') {
-            pivot = right;
-        }else if(pivot_type === 'middle') {
-            pivot = Math.round((left + right) / 2);
-        }else if(pivot_type === 'median3') {
-            if(left + 1 === right) {
-                pivot = left;
-          }else{
-            var middle = Math.round((left + right) / 2);
-            var LM = compare(aa, left, middle);
-            var MR = compare(aa, middle, right);
-            if(LM === MR) {
-                pivot = middle;
-            }else if(LM && !MR) {
-                pivot = compare(aa, left, right) ? right : left;
-            }else if(!LM && MR) {
-                pivot = compare(aa, left, right) ? left : right;
-            }
-          }
-        }else{
-            throw 'Invalid pivot_type ' + pivot_type;
-        }
-        return pivot;
-      }
-
-    function partition(aa, pivot_type, left, right) {
-        var pivot = choose_pivot(aa, pivot_type, left, right);
-        swap(aa, pivot, right);
     
-        // Partition the array around the pivot.
+    function partition(aa, left, right) {
+        var pivot = right;
+        swap(aa, pivot, right);
         pivot = left;
         for (var i = left; i < right; i++) {
           if (compare(aa, i, right)) {
@@ -179,22 +144,22 @@ var start = function(){
         return pivot;
     }
     
-    function Qsort(aa, pivot_type, left, right) {
+    function Qsort(aa, left, right) {
         var n = aa.length;
         if (typeof(left) === 'undefined') left = 0;
         if (typeof(right) === 'undefined') right = n - 1;
     
         if (left >= right) return;
     
-        var pivot = partition(aa, pivot_type, left, right);
-        Qsort(aa, pivot_type, left, pivot - 1);
-        Qsort(aa, pivot_type, pivot + 1, right);
+        var pivot = partition(aa, left, right);
+        Qsort(aa, left, pivot - 1);
+        Qsort(aa, pivot + 1, right);
     }
 
     function QuickSort(){
         var arr = this.ary.slice();
         this.actions = [];
-        Qsort(arr, "last", 0, arr.length-1);
+        Qsort(arr, 0, arr.length-1);
         run(this.actions);
     }
     
@@ -245,8 +210,6 @@ var start = function(){
           msort(aa, left, mid);
           msort(aa, mid + 1, right);
         }
-    
-        // Merge, building up a permutation. This could probably be prettier.
         var next_left = left;
         var next_right = mid + 1;
         var perm = [];
@@ -282,7 +245,7 @@ var start = function(){
     function mergeSort(){
         var arr = this.ary.slice();
         this.actions = [];
-        msort(arr, 0, 49);
+        msort(arr, 0, arr.length);
         run(this.actions)
     }
 
