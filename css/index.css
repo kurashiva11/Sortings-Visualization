@@ -35,3 +35,8 @@ ul li a{
 input{
     text-align: center;
 }
+
+.form-group{
+    font-size: 10px;
+    display: flex;
+}
