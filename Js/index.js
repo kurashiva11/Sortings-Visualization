@@ -4,6 +4,7 @@ var start = function(){
     var SWAP_COLOR = 'green';
     var COMPARE_COLOR = 'blue';
 
+    var stop_bool = false;
     var canvas = document.querySelector('canvas');
     this.width = canvas.getBoundingClientRect().width;
     this.height = canvas.getBoundingClientRect().height;
@@ -18,7 +19,7 @@ var start = function(){
         this.colors = [];
         this.actions = [];
         for(var i=0; i < nbars; i++){
-            this.ary.push(Math.floor( Math.random()*(canvas.height-10) ));
+            this.ary.push(1 + Math.floor( Math.random()*(canvas.height - 10) ));
             this.colors.push(DEFAULT_COLOR);
         }
         draw_arr(this.ary, this.colors);
@@ -40,11 +41,10 @@ var start = function(){
         // Draw a box around the outside of the canvas
         ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-        var y_zero = canvas.height-1;
         var x = spacing;
         for (var i = 0; i < ary.length; i++) {
             ctx.fillStyle = colors[i];
-            ctx.fillRect(x, ary[i], bar_width, y_zero);
+            ctx.fillRect(x, ary[i], bar_width, canvas.height-1);
             x += spacing + bar_width;
         }
     }
@@ -80,11 +80,12 @@ var start = function(){
             this.colors[ action[0] ] = DEFAULT_COLOR;
             this.colors[ action[1] ] = DEFAULT_COLOR;
             i++;
-            if(i>=t){
+            if(i>=t || stop_bool){
                 draw_arr(this.ary ,this.colors); // last 2 bars desnt change their color, if this line is removed
                 this.actions = []
                 this.ary = []
                 clearInterval(id);
+                stop_bool = false;
             }
         }, timeIntervel);
     }
@@ -251,24 +252,29 @@ var start = function(){
 
     init();
     document.querySelector('.bubble').addEventListener('click', function(err){
-        init();
-        bubbleSort();
+      init();
+      bubbleSort();
     });
     document.querySelector('.insertion').addEventListener('click', function(err){
-        init();
-        insertionSort();
+      init();
+      insertionSort();
     });
     document.querySelector('.selection').addEventListener('click', function(err){
-        init();
-        selectionSort();
+      init();
+      selectionSort();
     });
     document.querySelector('.quick').addEventListener('click', function(err){
-        init();
-        QuickSort();
+      init();
+      QuickSort();
     });
     document.querySelector('.merge').addEventListener('click', function(err){
-        init();
-        mergeSort();
+      init();
+      mergeSort();
+    });
+    document.querySelector('.stop').addEventListener('click', function(err){
+      this.actions = [];
+      this.ary = [];
+      stop_bool = true;
     });
 }
 start();
